@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pop an Image</title>
+  
+  <style>img {
+    border: 5px solid red;
+  }
+  </style>
+
+</head>
+<body>
+  <h1>Pop an Image</h1>
+  <form>
+    <label for="prompt">Enter a description:</label><br>
+    <textarea id="prompt" rows="4" cols="50"></textarea><br>
+    <button type="button" onclick="generateImage()">Magic</button>
+  </form>
+  <br>
+  <div id="result">
+    <!-- image will be displayed here -->
+  </div>
+  <script>
+    const API_KEY = 'Place API KEY HERE';
+
+    async function generateImage() {
+      const prompt = document.getElementById('prompt').value;
+      const response = await fetch(`https://api.openai.com/v1/images/generations`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${API_KEY}`
+        },
+        body: JSON.stringify({
+          'prompt': prompt,
+          'model': 'image-alpha-001',
+          'num_images': 1,
+          'size': '256x256',
+          'response_format': 'url'
+        })
+      });
+      const json = await response.json();
+      const imageUrl = json.data[0].url;
+      const imageElement = document.createElement('img');
+      imageElement.src = imageUrl;
+      document.getElementById('result').appendChild(imageElement);
+    }
+  </script>
+</body>
+</html>
